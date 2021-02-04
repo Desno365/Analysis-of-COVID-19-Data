@@ -3,6 +3,7 @@ package it.polimi.middleware.spark;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.spark.sql.*;
+import org.apache.spark.sql.expressions.Window;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
@@ -46,8 +47,13 @@ public class Main {
 				.schema(mySchema)
 				.csv(filePath + "files/datasets/ecdc-data.csv");
 
+
+
+		// Preprocess: select only interesting columns.
+		final Dataset<Row> covidDatasetWithSelectedColumns = covidDataset.select("country", "date", "yearAndWeek", "casesWeekly", "deathsWeekly");
+
 		// Preprocess: convert "date" from StringType to DateType.
-		final Dataset<Row> covidDatasetWithDate = covidDataset.withColumn("date", to_date(col("date"), "dd/MM/yyyy"));
+		final Dataset<Row> covidDatasetWithDate = covidDatasetWithSelectedColumns.withColumn("date", to_date(col("date"), "dd/MM/yyyy"));
 		covidDatasetWithDate.show();
 
 		// Preprocess: add a "dayOfTheWeek" column, for each date it will create 7 days of the week and it will update the date accordingly.
@@ -58,11 +64,20 @@ public class Main {
 		final Dataset<Row> covidDatasetWithDaysOfTheWeek = covidDatasetWithDate
 				.withColumn("dayOfTheWeek", explode(daysOfTheWeekForEachDate))
 				.withColumn("date", date_add(col("date"), col("dayOfTheWeek").minus(1)));
-		covidDatasetWithDaysOfTheWeek.show(35);
 
+		// Preprocess: add "casesDaily" column computed from the "casesWeekly" column and dividing by 7.
 		final Dataset<Row> covidDatasetWithEvenlySpreadDailyCases = covidDatasetWithDaysOfTheWeek
 				.withColumn("casesDaily", col("casesWeekly").divide(7).cast(DataTypes.IntegerType));
-		covidDatasetWithEvenlySpreadDailyCases.show(35);
+
+		// Preprocess: reorder columns.
+		final Dataset<Row> covidDatasetStep0 = covidDatasetWithEvenlySpreadDailyCases.select("date", "yearAndWeek", "dayOfTheWeek", "casesWeekly", "deathsWeekly", "casesDaily", "country");
+
+
+
+		// Step 1: Seven days moving average of new reported cases, for each county and for each day.
+		final Dataset<Row> covidDatasetStep1 = covidDatasetStep0
+				.withColumn("movingAverage7Days", avg(col("casesDaily")).over(Window.partitionBy("country").orderBy("date").rowsBetween(-6, 0)));
+		covidDatasetStep1.show(750);
 
 		// Example query: total amount of cases for each country.
 		/*final Dataset<Row> totalCasesPerCountry = covidDatasetWithDate
