@@ -4,6 +4,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.expressions.Window;
+import org.apache.spark.sql.expressions.WindowSpec;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
@@ -74,10 +75,14 @@ public class Main {
 
 
 
-		// Step 1: Seven days moving average of new reported cases, for each county and for each day.
+		// Step 1: Seven days moving average of new reported cases, for each country and for each day.
+		final WindowSpec window7DaysInEachCountry = Window
+				.partitionBy("country")
+				.orderBy("date")
+				.rowsBetween(-6, 0);
 		final Dataset<Row> covidDatasetStep1 = covidDatasetStep0
-				.withColumn("movingAverage7Days", avg(col("casesDaily")).over(Window.partitionBy("country").orderBy("date").rowsBetween(-6, 0)));
-		saveDatasetAsCSV(covidDatasetStep1, filePath + "files/outputs/total-cases-per-country");
+				.withColumn("movingAverage7Days", avg(col("casesDaily")).over(window7DaysInEachCountry));
+		saveDatasetAsCSV(covidDatasetStep1, filePath + "files/outputs/seven-days-moving-average-per-country");
 		covidDatasetStep1.show(750);
 	}
 
