@@ -77,14 +77,8 @@ public class Main {
 		// Step 1: Seven days moving average of new reported cases, for each county and for each day.
 		final Dataset<Row> covidDatasetStep1 = covidDatasetStep0
 				.withColumn("movingAverage7Days", avg(col("casesDaily")).over(Window.partitionBy("country").orderBy("date").rowsBetween(-6, 0)));
+		saveDatasetAsCSV(covidDatasetStep1, filePath + "files/outputs/total-cases-per-country");
 		covidDatasetStep1.show(750);
-
-		// Example query: total amount of cases for each country.
-		/*final Dataset<Row> totalCasesPerCountry = covidDatasetWithDate
-				.groupBy("country")
-				.sum("casesWeekly")
-				.select("country", "sum(casesWeekly)");
-		saveDatasetAsCSV(totalCasesPerCountry, filePath + "files/outputs/total-cases-per-country");*/
 	}
 
 	private static void saveDatasetAsCSV(Dataset<Row> dataset, String path) {
