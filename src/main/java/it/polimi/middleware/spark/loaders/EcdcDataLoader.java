@@ -1,6 +1,5 @@
 package it.polimi.middleware.spark.loaders;
 
-import it.polimi.middleware.spark.DatasetLoader;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;

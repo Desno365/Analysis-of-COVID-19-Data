@@ -1,4 +1,4 @@
-package it.polimi.middleware.spark;
+package it.polimi.middleware.spark.operators;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;

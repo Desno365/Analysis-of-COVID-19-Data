@@ -1,6 +1,6 @@
-package it.polimi.middleware.spark.queries;
+package it.polimi.middleware.spark.operators.queries;
 
-import it.polimi.middleware.spark.DatasetOperator;
+import it.polimi.middleware.spark.operators.DatasetOperator;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;

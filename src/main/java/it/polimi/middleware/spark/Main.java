@@ -1,10 +1,12 @@
 package it.polimi.middleware.spark;
 
+import it.polimi.middleware.spark.loaders.DatasetLoader;
 import it.polimi.middleware.spark.loaders.EcdcDataLoader;
-import it.polimi.middleware.spark.preprocessors.EcdcDataPreprocessor;
-import it.polimi.middleware.spark.queries.PercentageIncrease7DaysMA;
-import it.polimi.middleware.spark.queries.SevenDaysMovingAverageOperator;
-import it.polimi.middleware.spark.queries.Top10CountriesWithHighestPercentageIncrease;
+import it.polimi.middleware.spark.operators.DatasetOperator;
+import it.polimi.middleware.spark.operators.preprocessors.EcdcDataPreprocessor;
+import it.polimi.middleware.spark.operators.queries.PercentageIncrease7DaysMA;
+import it.polimi.middleware.spark.operators.queries.SevenDaysMovingAverageOperator;
+import it.polimi.middleware.spark.operators.queries.Top10CountriesWithHighestPercentageIncrease;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.spark.sql.Dataset;
