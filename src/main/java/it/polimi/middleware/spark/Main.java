@@ -76,30 +76,43 @@ public class Main {
 
 
 		// Step 1: Seven days moving average of new reported cases, for each country and for each day.
-		final WindowSpec window7DaysInEachCountry = Window
+		final WindowSpec window7DaysInEachCountryByDate = Window
 				.partitionBy("country")
 				.orderBy("date")
 				.rowsBetween(-6, 0);
 		final Dataset<Row> covidDatasetStep1 = covidDatasetStep0
-				.withColumn("movingAverage7Days", avg(col("casesDaily")).over(window7DaysInEachCountry));
+				.withColumn("movingAverage7Days", avg(col("casesDaily")).over(window7DaysInEachCountryByDate));
 		saveDatasetAsCSV(covidDatasetStep1, filePath + "files/outputs/seven-days-moving-average-per-country");
 
 
 
 		// Step 2: Percentage increase (with respect to the day before) of the seven days moving average, for each country and for each day.
 		// How it is computed: percentage increase = ((x2-x1)*100)/x1. This can be simplified to (x2/x1 - 1)*100
-		final WindowSpec window1DayInEachCountry = Window
+		final WindowSpec windowInEachCountryByDate = Window
 				.partitionBy("country")
 				.orderBy("date");
 		final Column percentageIncreaseComputationColumn = col("movingAverage7Days")
-				.divide(lag("movingAverage7Days", 1).over(window1DayInEachCountry))
+				.divide(lag("movingAverage7Days", 1).over(windowInEachCountryByDate))
 				.minus(1.0)
 				.multiply(100.0);
 		final Dataset<Row> covidDatasetStep2 = covidDatasetStep1
 				.withColumn("percentageIncreaseOfMA7Days", percentageIncreaseComputationColumn)
 				.withColumn("percentageIncreaseOfMA7Days", when(col("percentageIncreaseOfMA7Days").isNull(), 0.0).otherwise(col("percentageIncreaseOfMA7Days")));
 		saveDatasetAsCSV(covidDatasetStep2, filePath + "files/outputs/percentage-increase-seven-days-moving-average-per-country");
-		covidDatasetStep2.show(750);
+
+
+		// Step 3: Top 10 countries with the highest percentage increase of the seven days moving average, for each day
+		final WindowSpec windowInEachDateByPercentageIncrease = Window
+				.partitionBy("date")
+				.orderBy(desc("percentageIncreaseOfMA7Days"));
+		final Dataset<Row> covidDatasetStep3 = covidDatasetStep2
+				.withColumn("rank", rank().over(windowInEachDateByPercentageIncrease))
+				.where(col("rank").$less$eq(10))
+				.orderBy("date", "rank");
+		saveDatasetAsCSV(covidDatasetStep3, filePath + "files/outputs/top-ten-countries-with-highest-percentage-increase");
+		covidDatasetStep3
+				.where(col("date").geq(to_date(lit("04/01/2021"), "dd/MM/yyyy")))
+				.show(750);
 	}
 
 	private static void saveDatasetAsCSV(Dataset<Row> dataset, String path) {
