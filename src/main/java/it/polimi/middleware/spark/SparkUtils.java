@@ -12,6 +12,13 @@ public class SparkUtils {
 		throw new NotAllowedException("Utils class with static methods. Should not be instantiated.");
 	}
 
+	/**
+	 * Saves the dataset on a single CSV file.
+	 * Note: since it is saved on a single file it needs to bring the result in a single worker, creating a bottleneck.
+	 * So this operation is not distributed.
+	 * @param dataset the dataset to be saved.
+	 * @param filePath the path where to save the file.
+	 */
 	public static void saveDatasetAsSingleCSV(final Dataset<Row> dataset, final String filePath) {
 		dataset.coalesce(1)
 				.write()
