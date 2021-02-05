@@ -83,7 +83,23 @@ public class Main {
 		final Dataset<Row> covidDatasetStep1 = covidDatasetStep0
 				.withColumn("movingAverage7Days", avg(col("casesDaily")).over(window7DaysInEachCountry));
 		saveDatasetAsCSV(covidDatasetStep1, filePath + "files/outputs/seven-days-moving-average-per-country");
-		covidDatasetStep1.show(750);
+
+
+
+		// Step 2: Percentage increase (with respect to the day before) of the seven days moving average, for each country and for each day.
+		// How it is computed: percentage increase = ((x2-x1)*100)/x1. This can be simplified to (x2/x1 - 1)*100
+		final WindowSpec window1DayInEachCountry = Window
+				.partitionBy("country")
+				.orderBy("date");
+		final Column percentageIncreaseComputationColumn = col("movingAverage7Days")
+				.divide(lag("movingAverage7Days", 1).over(window1DayInEachCountry))
+				.minus(1.0)
+				.multiply(100.0);
+		final Dataset<Row> covidDatasetStep2 = covidDatasetStep1
+				.withColumn("percentageIncreaseOfMA7Days", percentageIncreaseComputationColumn)
+				.withColumn("percentageIncreaseOfMA7Days", when(col("percentageIncreaseOfMA7Days").isNull(), 0.0).otherwise(col("percentageIncreaseOfMA7Days")));
+		saveDatasetAsCSV(covidDatasetStep2, filePath + "files/outputs/percentage-increase-seven-days-moving-average-per-country");
+		covidDatasetStep2.show(750);
 	}
 
 	private static void saveDatasetAsCSV(Dataset<Row> dataset, String path) {
