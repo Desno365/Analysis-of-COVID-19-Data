@@ -28,7 +28,7 @@ public class Main {
 				.getOrCreate();
 
 		// Load ECDC data.
-		final DatasetLoader datasetLoader = new EcdcDataLoader(sparkSession, filePath + "files/datasets/ecdc-data.csv");
+		final DatasetLoader datasetLoader = new EcdcDataLoader(sparkSession, filePath + "files/datasets-test/test-data.csv");
 		final Dataset<Row> covidDataset = datasetLoader.load();
 
 		// Preprocess data.

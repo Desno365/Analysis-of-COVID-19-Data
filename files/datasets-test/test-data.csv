@@ -1,0 +1,7 @@
+dateRep,year_week,cases_weekly,deaths_weekly,countriesAndTerritories,geoId,countryterritoryCode,popData2019,continentExp,notification_rate_per_100000_population_14-days
+04/01/2021,2020-53,125,60,Polimi,PO,MI,55000,Europe,7.61
+28/12/2020,2020-52,7,88,Polimi,PO,MI,55000,Europe,7.19
+21/12/2020,2020-51,0,111,Polimi,PO,MI,55000,Europe,6.56
+04/01/2021,2020-53,312,60,Bovisa,BO,MIBO,10000,Europe,7.61
+28/12/2020,2020-52,754,88,Bovisa,BO,MIBO,10000,Europe,7.19
+21/12/2020,2020-51,1000,111,Bovisa,BO,MIBO,10000,Europe,6.56
