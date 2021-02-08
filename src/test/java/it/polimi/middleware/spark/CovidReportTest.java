@@ -8,7 +8,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-class MainTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class CovidReportTest {
 
     @BeforeEach
     void setUp() {
@@ -32,7 +34,7 @@ class MainTest {
         final File correctOutputCsv = new File(filePath + "files/datasets-test/ecdc-test-data-expected-output.csv");
 
         // Check that expected output and actual output are equal.
-        assert getNumberOfMatchingLinesInCSVs(testOutputCsv, correctOutputCsv) == 43;
+        assertEquals(43, getNumberOfMatchingLinesInCSVs(testOutputCsv, correctOutputCsv));
     }
 
 
