@@ -1,25 +1,12 @@
 package it.polimi.middleware.spark;
 
-import it.polimi.middleware.spark.loaders.DatasetLoader;
-import it.polimi.middleware.spark.loaders.EcdcDataLoader;
-import it.polimi.middleware.spark.loaders.TestLoader;
-import it.polimi.middleware.spark.operators.DatasetOperator;
-import it.polimi.middleware.spark.operators.preprocessors.EcdcDataPreprocessor;
-import it.polimi.middleware.spark.operators.queries.PercentageIncrease7DaysMA;
-import it.polimi.middleware.spark.operators.queries.SevenDaysMovingAverageOperator;
-import it.polimi.middleware.spark.operators.queries.Top10CountriesWithHighestPercentageIncrease;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.apache.spark.sql.functions.*;
 
 class MainTest {
 
@@ -28,45 +15,24 @@ class MainTest {
     }
 
     @Test
-    public void testEcdcTestDataset(){
+    public void testCorrectnessOfEcdcAnalysis(){
         final String master = "local[4]";
         final String filePath = "./";
-        Logger.getLogger("org").setLevel(Level.OFF);
-        final SparkSession sparkSession = SparkSession
-                .builder()
-                .master(master)
-                .appName("CovidReport")
-                .getOrCreate();
+        final String inputDatasetPath = filePath + "files/datasets-test/ecdc-test-data.csv";
+        final String outputDirectoryPath = filePath + "files/outputs-test/";
 
-        final DatasetLoader datasetLoader = new EcdcDataLoader(sparkSession, filePath + "files/datasets-test/test-data.csv");
-        final Dataset<Row> covidDataset = datasetLoader.load();
-        final DatasetOperator preprocessOperator = new EcdcDataPreprocessor(covidDataset);
-        final Dataset<Row> preprocessedCovidDataset = preprocessOperator.performOperation();
+        // Perform analysis.
+        final CovidReport covidReport = new CovidReport(master, inputDatasetPath, outputDirectoryPath, false);
+        covidReport.performAnalysis();
 
-        final DatasetOperator query1Operator = new SevenDaysMovingAverageOperator(preprocessedCovidDataset);
-        final Dataset<Row> covidDatasetQuery1 = query1Operator.performOperation();
+        // Get File objects of both expected output and actual output.
+        final String top10OutputDirectoryPath = filePath + "files/outputs-test/top-ten-countries-with-highest-percentage-increase";
+        final String fileName = getFileNameOfOutputCsvInOutputDirectory(top10OutputDirectoryPath);
+        final File testOutputCsv = new File(top10OutputDirectoryPath + "/" + fileName);
+        final File correctOutputCsv = new File(filePath + "files/datasets-test/ecdc-test-data-expected-output.csv");
 
-        final DatasetOperator query2Operator = new PercentageIncrease7DaysMA(covidDatasetQuery1);
-        final Dataset<Row> covidDatasetQuery2 = query2Operator.performOperation();
-
-        final DatasetOperator query3Operator = new Top10CountriesWithHighestPercentageIncrease(covidDatasetQuery2);
-        final Dataset<Row> covidDatasetQuery3 = query3Operator.performOperation();
-
-        SparkUtils.saveDatasetAsSingleCSV(covidDatasetQuery3, filePath + "files/outputs/test-output-to-compare");
-
-        File file = new File(filePath + "files/outputs/test-output-to-compare");
-        String fileName="";
-        for(String string: file.list()){
-            if(string.indexOf("SUCCESS")==-1 && string.indexOf("crc")==-1)
-                fileName=string;
-        }
-        File testOutputCsv = new File(filePath + "files/outputs/test-output-to-compare/" + fileName);
-        File correctOutputCsv = new File(filePath + "files/outputs/tests/outputs-test.csv");
-
-        assert compareFiles(testOutputCsv,correctOutputCsv)==43;
-
-//        covidTestDataset.show();
-//        covidTestDataset.intersect(covidDatasetQuery3).show(1000);
+        // Check that expected output and actual output are equal.
+        assert getNumberOfMatchingLinesInCSVs(testOutputCsv, correctOutputCsv) == 43;
     }
 
 
@@ -74,7 +40,17 @@ class MainTest {
     void tearDown() {
     }
 
-    int compareFiles(File file1,File file2) {
+    private String getFileNameOfOutputCsvInOutputDirectory(String outputDirectoryPath) {
+        File file = new File(outputDirectoryPath);
+        String fileName="";
+        for(String string: file.list()){
+            if(!string.contains("SUCCESS") && !string.contains("crc"))
+                fileName=string;
+        }
+        return fileName;
+    }
+
+    private int getNumberOfMatchingLinesInCSVs(File file1, File file2) {
         BufferedReader bfr1 = null;
         BufferedReader bfr2 = null;
         List<String> file1Data = new ArrayList<>();
