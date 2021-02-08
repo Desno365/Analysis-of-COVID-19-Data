@@ -24,6 +24,13 @@ public class CovidReport {
 	private final String outputDirectoryPath;
 	private final boolean showResultsInTerminal;
 
+	/**
+	 * Performs a covid report.
+	 * @param sparkMaster the Spark master URL to connect to.
+	 * @param inputDatasetPath path to the CSV file containing the raw covid data.
+	 * @param outputDirectoryPath path to the directory that should be used to save the outputs.
+	 * @param showResultsInTerminal set to true to show a part of the result also in the terminal.
+	 */
 	public CovidReport(String sparkMaster, String inputDatasetPath, String outputDirectoryPath, boolean showResultsInTerminal) {
 		this.sparkMaster = sparkMaster;
 		this.inputDatasetPath = inputDatasetPath;
@@ -31,6 +38,13 @@ public class CovidReport {
 		this.showResultsInTerminal = showResultsInTerminal;
 	}
 
+	/**
+	 * Performs the covid report analysis:
+	 * 0) Preprocess input dataset;
+	 * 1) Seven days moving average of new reported cases, for each country and for each day;
+	 * 2) Percentage increase (with respect to the day before) of the seven days moving average, for each country and for each day;
+	 * 3) Top 10 countries with the highest percentage increase of the seven days moving average, for each day.
+	 */
 	public void performAnalysis() {
 		// Disable logs of Spark.
 		Logger.getLogger("org").setLevel(Level.OFF);
