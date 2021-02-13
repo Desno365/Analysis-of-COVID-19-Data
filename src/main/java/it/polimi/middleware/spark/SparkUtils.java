@@ -4,12 +4,10 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SaveMode;
 
-import javax.ws.rs.NotAllowedException;
-
 public class SparkUtils {
 
 	private SparkUtils() {
-		throw new NotAllowedException("Utils class with static methods. Should not be instantiated.");
+		throw new IllegalStateException("Utils class with static methods. Should not be instantiated.");
 	}
 
 	/**
