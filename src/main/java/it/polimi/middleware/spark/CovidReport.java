@@ -61,7 +61,7 @@ public class CovidReport {
 		final Dataset<Row> covidDataset = datasetLoader.load();
 
 		// Preprocess data.
-		final DatasetOperator preprocessOperator = new EcdcDataPreprocessor(covidDataset);
+		final DatasetOperator preprocessOperator = new EcdcDataPreprocessor(covidDataset, showResultsInTerminal);
 		final Dataset<Row> preprocessedCovidDataset = preprocessOperator.performOperation();
 
 		// Step 1: Seven days moving average of new reported cases, for each country and for each day.
@@ -80,6 +80,8 @@ public class CovidReport {
 			System.out.println("############## Moving average + Percentage increase ##############");
 			System.out.println("##################################################################");
 			covidDatasetQuery2.show(750);
+		} else {
+			System.out.println("Finished computing: Moving average + Percentage increase.");
 		}
 
 		// Step 3: Top 10 countries with the highest percentage increase of the seven days moving average, for each day.
@@ -95,6 +97,8 @@ public class CovidReport {
 			covidDatasetQuery3
 					.where(col("date").geq(to_date(lit("04/01/2021"), "dd/MM/yyyy")))
 					.show(100);
+		} else {
+			System.out.println("Finished computing: Top 10 countries by percentage increase.");
 		}
 	}
 }

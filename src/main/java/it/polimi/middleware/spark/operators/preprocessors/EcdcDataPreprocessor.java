@@ -11,8 +11,11 @@ import static org.apache.spark.sql.functions.col;
 
 public class EcdcDataPreprocessor extends DatasetOperator {
 
-	public EcdcDataPreprocessor(Dataset<Row> dataset) {
+	private final boolean showResultsInTerminal;
+
+	public EcdcDataPreprocessor(Dataset<Row> dataset, boolean showResultsInTerminal) {
 		super(dataset);
+		this.showResultsInTerminal = showResultsInTerminal;
 	}
 
 	@Override
@@ -25,10 +28,14 @@ public class EcdcDataPreprocessor extends DatasetOperator {
 				.select("country", "date", "yearAndWeek", "casesWeekly")
 				.withColumn("date", to_date(col("date"), "dd/MM/yyyy"));
 
-		System.out.println("##############################################");
-		System.out.println("############## Raw ECDC dataset ##############");
-		System.out.println("##############################################");
-		rawDataset.show();
+		if(showResultsInTerminal) {
+			System.out.println("##############################################");
+			System.out.println("############## Raw ECDC dataset ##############");
+			System.out.println("##############################################");
+			rawDataset.show();
+		} else {
+			System.out.println("Finished loading: Ecdc data.");
+		}
 
 		// Preprocessing of the data.
 		// How is it done:
