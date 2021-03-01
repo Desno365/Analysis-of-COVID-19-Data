@@ -1,7 +1,5 @@
 package it.polimi.middleware.spark;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -11,10 +9,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CovidReportTest {
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @Test
     public void testCorrectnessOfEcdcAnalysis(){
@@ -35,11 +29,6 @@ class CovidReportTest {
 
         // Check that expected output and actual output are equal.
         assertEquals(43, getNumberOfMatchingLinesInCSVs(testOutputCsv, correctOutputCsv));
-    }
-
-
-    @AfterEach
-    void tearDown() {
     }
 
     private String getFileNameOfOutputCsvInOutputDirectory(String outputDirectoryPath) {
