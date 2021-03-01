@@ -1,6 +1,9 @@
 # Analysis of COVID-19 Data using Apache Spark
 
-### Description of the project
+
+## Assignment
+
+#### Description of the project
 
 Implement a program that analyzes open datasets to study the evolution of the COVID-19 situation worldwide. The program starts from the dataset of new reported cases for each country daily and computes the following queries:
 
@@ -13,5 +16,18 @@ Implement a program that analyzes open datasets to study the evolution of the CO
 
 You can either use [real open datasets](https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide) or synthetic data generated with a simulator.
 
-### Assumptions and Guidelines
+#### Assumptions and Guidelines
 * When using a real dataset, for countries that provide weekly reports, you can assume that the weekly increment is evenly spread across the day of the week.
+
+
+## Usage
+
+See [INSTRUCTIONS.md](https://github.com/Desno365/Spark-Middleware-project/blob/master/INSTRUCTIONS.md).
+
+## Developers
+
+[Accordi Gianmarco](https://github.com/gianfi12)
+
+[Buratti Roberto](https://github.com/Furcanzo)
+
+[Motta Dennis](https://github.com/Desno365)
