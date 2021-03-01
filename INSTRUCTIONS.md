@@ -18,9 +18,9 @@ The application has been tested using [Spark release 3.0.2 pre-built for Apache 
 
 * `export SPARK_LOCAL_IP=127.0.0.1`
 * `export SPARK_MASTER_HOST=127.0.0.1`
-* `cd $SPARK_FOLDER_PATH`
 * `mkdir /tmp/spark-events`
-* Change or create the file `/conf/spark-defaults.conf` by setting these 3 properties:
+* `cd $SPARK_FOLDER_PATH`
+* Change or create the file `./conf/spark-defaults.conf` by setting these 3 properties:
     * `spark.master spark://127.0.0.1:7077`
     * `spark.eventLog.enabled true`
     * `spark.eventLog.dir /tmp/spark-events/`
