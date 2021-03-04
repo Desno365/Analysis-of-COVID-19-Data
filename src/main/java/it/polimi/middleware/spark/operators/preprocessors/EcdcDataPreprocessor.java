@@ -48,6 +48,6 @@ public class EcdcDataPreprocessor extends DatasetOperator {
 				.withColumn("dayOfTheWeek", explode(daysOfTheWeekForEachDate))
 				.withColumn("date", date_add(col("date"), col("dayOfTheWeek").minus(1)))
 				.withColumn("casesDaily", col("casesWeekly").divide(7).cast(DataTypes.IntegerType))
-				.select("country", "date", "yearAndWeek", "dayOfTheWeek", "casesWeekly", "casesDaily");
+				.select("country", "date", "casesWeekly", "casesDaily");
 	}
 }
