@@ -39,6 +39,6 @@ public class EcdcDataLoader extends DatasetLoader {
 				.option("header", "true")
 				.option("delimiter", ",")
 				.schema(schema)
-				.csv(getFilePath());
+				.csv(getPath());
 	}
 }
