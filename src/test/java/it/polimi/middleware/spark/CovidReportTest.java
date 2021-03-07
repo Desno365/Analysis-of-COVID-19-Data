@@ -31,6 +31,27 @@ class CovidReportTest {
         assertEquals(43, getNumberOfMatchingLinesInCSVs(testOutputCsv, correctOutputCsv));
     }
 
+    @Test
+    void testCorrectnessOfSimulationAnalysis(){
+        final String master = "local[4]";
+        final String filePath = "./";
+        final String datasetsDirectoryPath = filePath + "files/datasets-test/";
+        final String outputsDirectoryPath = filePath + "files/outputs-test/";
+
+        // Perform analysis.
+        final CovidReport covidReport = new CovidReport(master, datasetsDirectoryPath, outputsDirectoryPath, "simulation", false);
+        covidReport.performAnalysis();
+
+        // Get File objects of both expected output and actual output.
+        final String top10OutputDirectoryPath = filePath + "files/outputs-test/simulation-dataset/top-ten-countries-with-highest-percentage-increase";
+        final String fileName = getFileNameOfOutputCsvInOutputDirectory(top10OutputDirectoryPath);
+        final File testOutputCsv = new File(top10OutputDirectoryPath + "/" + fileName);
+        final File correctOutputCsv = new File(filePath + "files/datasets-test/simulation-test-data-expected-output.csv");
+
+        // Check that expected output and actual output are equal.
+        assertEquals(161, getNumberOfMatchingLinesInCSVs(testOutputCsv, correctOutputCsv));
+    }
+
     private String getFileNameOfOutputCsvInOutputDirectory(String outputDirectoryPath) {
         File file = new File(outputDirectoryPath);
         String fileName="";
