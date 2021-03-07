@@ -14,7 +14,7 @@ public class EcdcDataPreprocessor extends DatasetOperator {
 	private final boolean showResultsInTerminal;
 
 	public EcdcDataPreprocessor(Dataset<Row> dataset, boolean showResultsInTerminal) {
-		super(dataset);
+		super(dataset, "ecdc-dataset");
 		this.showResultsInTerminal = showResultsInTerminal;
 	}
 
@@ -25,16 +25,16 @@ public class EcdcDataPreprocessor extends DatasetOperator {
 		// 1) Select only interesting columns.
 		// 2) Convert "date" from StringType to DateType.
 		final Dataset<Row> rawDataset = getDataset()
-				.select("country", "date", "yearAndWeek", "casesWeekly")
+				.select("country", "date", "casesWeekly")
 				.withColumn("date", to_date(col("date"), "dd/MM/yyyy"));
 
 		if(showResultsInTerminal) {
-			System.out.println("##############################################");
-			System.out.println("############## Raw ECDC dataset ##############");
-			System.out.println("##############################################");
+			System.out.println("######################################################");
+			System.out.println("###### Raw ECDC data (only interesting columns) ######");
+			System.out.println("######################################################");
 			rawDataset.show();
 		} else {
-			System.out.println("Finished loading: Ecdc data.");
+			System.out.println("Finished loading: " + getDatasetName() + ".");
 		}
 
 		// Preprocessing of the data.
@@ -42,7 +42,7 @@ public class EcdcDataPreprocessor extends DatasetOperator {
 		// 1) Add a "dayOfTheWeek" column by adding 7 days for each date. But then "date" will be equal in all 7 days. So now we need to update the date.
 		// 2) Update "date" by adding to each date a number of days equal to the day of the week - 1.
 		// 3) Add "casesDaily" column computed from the "casesWeekly" column and dividing by 7.
-		// 4) Reorder columns with a select.
+		// 4) Reorder columns with a select and keep only interesting columns.
 		final Column daysOfTheWeekForEachDate = array(lit(7), lit(6), lit(5), lit(4), lit(3), lit(2), lit(1));
 		return rawDataset
 				.withColumn("dayOfTheWeek", explode(daysOfTheWeekForEachDate))

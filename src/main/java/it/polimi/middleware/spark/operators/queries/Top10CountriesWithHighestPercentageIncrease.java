@@ -14,7 +14,7 @@ import static org.apache.spark.sql.functions.*;
 public class Top10CountriesWithHighestPercentageIncrease extends DatasetOperator {
 
 	public Top10CountriesWithHighestPercentageIncrease(Dataset<Row> dataset) {
-		super(dataset);
+		super(dataset, "top-ten-countries-with-highest-percentage-increase");
 	}
 
 	@Override

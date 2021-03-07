@@ -14,8 +14,8 @@ public class EcdcDataLoader extends DatasetLoader {
 
 	private final StructType schema;
 
-	public EcdcDataLoader(SparkSession sparkSession, String filePath) {
-		super(sparkSession, filePath);
+	public EcdcDataLoader(SparkSession sparkSession, String datasetsDirectoryPath) {
+		super(sparkSession, datasetsDirectoryPath);
 
 		// Create schema.
 		final List<StructField> mySchemaFields = new ArrayList<>();
@@ -39,6 +39,6 @@ public class EcdcDataLoader extends DatasetLoader {
 				.option("header", "true")
 				.option("delimiter", ",")
 				.schema(schema)
-				.csv(getPath());
+				.csv(getDatasetsDirectoryPath() + "ecdc-data.csv");
 	}
 }

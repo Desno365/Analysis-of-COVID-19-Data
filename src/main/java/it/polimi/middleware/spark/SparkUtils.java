@@ -1,8 +1,11 @@
 package it.polimi.middleware.spark;
 
+import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SaveMode;
+
+import static org.apache.spark.sql.functions.lit;
 
 public class SparkUtils {
 
@@ -24,5 +27,10 @@ public class SparkUtils {
 				.format("csv")
 				.option("header", "true")
 				.save(filePath);
+	}
+
+	public static Column getDateColumnLiteralFromJavaDate(java.util.Date date) {
+		final java.sql.Date currentSqlDate = new java.sql.Date(date.getTime());
+		return lit(currentSqlDate);
 	}
 }

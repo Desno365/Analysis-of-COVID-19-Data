@@ -7,16 +7,16 @@ import org.apache.spark.sql.SparkSession;
 public abstract class DatasetLoader {
 
 	private final SparkSession sparkSession;
-	private final String path;
+	private final String datasetsDirectoryPath;
 
 	/**
 	 * Creates a new DatasetLoader that will load the data contained in the file using the sparkSession provided.
 	 * @param sparkSession the session from which to load the dataset.
-	 * @param path the file from which getting the data.
+	 * @param datasetsDirectoryPath the file from which getting the data.
 	 */
-	public DatasetLoader(SparkSession sparkSession, String path) {
+	public DatasetLoader(SparkSession sparkSession, String datasetsDirectoryPath) {
 		this.sparkSession = sparkSession;
-		this.path = path;
+		this.datasetsDirectoryPath = datasetsDirectoryPath;
 	}
 
 	/**
@@ -29,7 +29,7 @@ public abstract class DatasetLoader {
 		return sparkSession;
 	}
 
-	protected String getPath() {
-		return path;
+	protected String getDatasetsDirectoryPath() {
+		return datasetsDirectoryPath;
 	}
 }

@@ -15,7 +15,7 @@ import static org.apache.spark.sql.functions.col;
 public class SevenDaysMovingAverageOperator extends DatasetOperator {
 
 	public SevenDaysMovingAverageOperator(Dataset<Row> dataset) {
-		super(dataset);
+		super(dataset, "seven-days-moving-average-per-country");
 	}
 
 	@Override

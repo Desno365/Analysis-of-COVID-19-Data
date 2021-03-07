@@ -12,8 +12,8 @@ The application has been tested using [Spark release 3.0.2 pre-built for Apache 
 
 Modify these variables based on your setup.
 
-* `export SPARK_FOLDER_PATH=/Users/Desno365/Developing-software/spark-3.0.2-bin-hadoop2.7`
-* `export PROJECT_FOLDER_PATH=/Users/Desno365/Desktop/Politecnico/Corsi-e-materiale/Middleware-for-Distributed-Systems/Projects/project5-spark`
+* `export SPARK_FOLDER_PATH=/Users/Desno365/Developing-software/spark-3.0.2-bin-hadoop2.7/`
+* `export PROJECT_FOLDER_PATH=/Users/Desno365/Desktop/Politecnico/Corsi-e-materiale/Middleware-for-Distributed-Systems/Projects/project5-spark/`
 
 Note:
   * `SPARK_FOLDER_PATH` is the path to the folder containing Spark that has been downloaded at Step 0.
@@ -57,7 +57,7 @@ Now it's possible to access the Spark Web UI of the History Server at [127.0.0.1
 
 Note: The application must have already been compiled to a Jar (use Maven package).
 
-* `./bin/spark-submit --class it.polimi.middleware.spark.Main $PROJECT_FOLDER_PATH/target/project5-spark-1.0.jar spark://127.0.0.1:7077 $PROJECT_FOLDER_PATH/ false`
+* `./bin/spark-submit --class it.polimi.middleware.spark.Main ${PROJECT_FOLDER_PATH}target/project5-spark-1.0.jar spark://127.0.0.1:7077 ${PROJECT_FOLDER_PATH} all false`
 
 
 ### Step 7: Stop master, slave and History Server

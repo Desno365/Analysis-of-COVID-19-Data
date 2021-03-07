@@ -16,7 +16,7 @@ import static org.apache.spark.sql.functions.when;
 public class PercentageIncrease7DaysMA extends DatasetOperator {
 
 	public PercentageIncrease7DaysMA(Dataset<Row> dataset) {
-		super(dataset);
+		super(dataset, "percentage-increase-seven-days-moving-average-per-country");
 	}
 
 	@Override
