@@ -59,6 +59,11 @@ Note: The application must have already been compiled to a Jar (use Maven packag
 
 * `./bin/spark-submit --class it.polimi.middleware.spark.Main ${PROJECT_FOLDER_PATH}target/project5-spark-1.0.jar spark://127.0.0.1:7077 ${PROJECT_FOLDER_PATH} all false`
 
+Note about arguments:
+1) First parameter: path to the project folder;
+2) Seconds parameter: type `ecdc`, `simulation` or `all` to chose between the possible datasets.
+3) Third parameter: type `true` to show results on the terminal, `false` to not show them.
+
 
 ### Step 7: Stop master, slave and History Server
 
