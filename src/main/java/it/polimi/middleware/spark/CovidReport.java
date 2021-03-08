@@ -22,12 +22,14 @@ import static org.apache.spark.sql.functions.*;
 
 public class CovidReport {
 
-	private static final String SPARK_APP_NAME = "CovidReport";
+	private static final String SPARK_APP_NAME_CACHE_ON = "CovidReport-CacheOn";
+	private static final String SPARK_APP_NAME_CACHE_OFF = "CovidReport-CacheOff";
 
 	private final String sparkMaster;
 	private final String datasetsDirectoryPath;
 	private final String outputsDirectoryPath;
 	private final String whichDataset;
+	private final boolean useCache;
 	private final boolean showResultsInTerminal;
 
 	/**
@@ -37,11 +39,12 @@ public class CovidReport {
 	 * @param outputsDirectoryPath path to the directory that should be used to save the outputs.
 	 * @param showResultsInTerminal set to true to show a part of the result also in the terminal.
 	 */
-	public CovidReport(String sparkMaster, String datasetsDirectoryPath, String outputsDirectoryPath, String whichDataset, boolean showResultsInTerminal) {
+	public CovidReport(String sparkMaster, String datasetsDirectoryPath, String outputsDirectoryPath, String whichDataset, boolean useCache, boolean showResultsInTerminal) {
 		this.sparkMaster = sparkMaster;
 		this.datasetsDirectoryPath = datasetsDirectoryPath;
 		this.outputsDirectoryPath = outputsDirectoryPath;
 		this.whichDataset = whichDataset;
+		this.useCache = useCache;
 		this.showResultsInTerminal = showResultsInTerminal;
 	}
 
@@ -60,7 +63,7 @@ public class CovidReport {
 		final SparkSession sparkSession = SparkSession
 				.builder()
 				.master(sparkMaster)
-				.appName(SPARK_APP_NAME)
+				.appName(useCache ? SPARK_APP_NAME_CACHE_ON : SPARK_APP_NAME_CACHE_OFF)
 				.getOrCreate();
 
 		final List<DatasetOperator> preprocessors = new ArrayList<>();
@@ -92,11 +95,15 @@ public class CovidReport {
 			// Step 1: Seven days moving average of new reported cases, for each country and for each day.
 			final DatasetOperator query1Operator = new SevenDaysMovingAverageOperator(preprocessedCovidDataset);
 			final Dataset<Row> covidDatasetQuery1 = query1Operator.performOperation();
+			if(useCache)
+				covidDatasetQuery1.cache();
 			SparkUtils.saveDatasetAsSingleCSV(covidDatasetQuery1, outputsDirectoryPath + "/" + preprocessor.getDatasetName() + "/" + query1Operator.getDatasetName());
 
 			// Step 2: Percentage increase (with respect to the day before) of the seven days moving average, for each country and for each day.
 			final DatasetOperator query2Operator = new PercentageIncrease7DaysMA(covidDatasetQuery1);
 			final Dataset<Row> covidDatasetQuery2 = query2Operator.performOperation();
+			if(useCache)
+				covidDatasetQuery2.cache();
 			SparkUtils.saveDatasetAsSingleCSV(covidDatasetQuery2, outputsDirectoryPath + "/" + preprocessor.getDatasetName() + "/" + query2Operator.getDatasetName());
 
 			// Show moving average and percentage increase.
@@ -112,6 +119,8 @@ public class CovidReport {
 			// Step 3: Top 10 countries with the highest percentage increase of the seven days moving average, for each day.
 			final DatasetOperator query3Operator = new Top10CountriesWithHighestPercentageIncrease(covidDatasetQuery2);
 			final Dataset<Row> covidDatasetQuery3 = query3Operator.performOperation();
+			if(useCache)
+				covidDatasetQuery3.cache();
 			SparkUtils.saveDatasetAsSingleCSV(covidDatasetQuery3, outputsDirectoryPath + "/" + preprocessor.getDatasetName() + "/" + query3Operator.getDatasetName());
 
 			// Show top 10 countries.

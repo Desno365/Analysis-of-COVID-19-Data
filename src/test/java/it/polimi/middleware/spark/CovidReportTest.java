@@ -18,7 +18,7 @@ class CovidReportTest {
         final String outputsDirectoryPath = filePath + "files/outputs-test/";
 
         // Perform analysis.
-        final CovidReport covidReport = new CovidReport(master, datasetsDirectoryPath, outputsDirectoryPath, "ecdc", false);
+        final CovidReport covidReport = new CovidReport(master, datasetsDirectoryPath, outputsDirectoryPath, "ecdc", true, false);
         covidReport.performAnalysis();
 
         // Get File objects of both expected output and actual output.
@@ -39,7 +39,7 @@ class CovidReportTest {
         final String outputsDirectoryPath = filePath + "files/outputs-test/";
 
         // Perform analysis.
-        final CovidReport covidReport = new CovidReport(master, datasetsDirectoryPath, outputsDirectoryPath, "simulation", false);
+        final CovidReport covidReport = new CovidReport(master, datasetsDirectoryPath, outputsDirectoryPath, "simulation", true, false);
         covidReport.performAnalysis();
 
         // Get File objects of both expected output and actual output.

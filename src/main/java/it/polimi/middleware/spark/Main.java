@@ -8,10 +8,11 @@ public class Main {
 		final String whichDataset = args.length > 2 ? args[2].toLowerCase() : "all";
 		final String datasetsDirectoryPath = filePath + "files/datasets/";
 		final String outputsDirectoryPath = filePath + "files/outputs/";
-		final boolean showResultsInTerminal = args.length > 3 ? Boolean.parseBoolean(args[3]) : true;
+		final boolean useCache = args.length > 3 ? Boolean.parseBoolean(args[3]) : true;
+		final boolean showResultsInTerminal = args.length > 4 ? Boolean.parseBoolean(args[4]) : true;
 
 		// Perform analysis.
-		final CovidReport covidReport = new CovidReport(master, datasetsDirectoryPath, outputsDirectoryPath, whichDataset, showResultsInTerminal);
+		final CovidReport covidReport = new CovidReport(master, datasetsDirectoryPath, outputsDirectoryPath, whichDataset, useCache, showResultsInTerminal);
 		covidReport.performAnalysis();
 	}
 }
