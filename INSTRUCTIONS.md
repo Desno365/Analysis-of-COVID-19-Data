@@ -36,21 +36,21 @@ Note:
 
 * `./sbin/start-master.sh`
 
-Now it's possible to access the Spark Web UI of the master at [127.0.0.1:8080](127.0.0.1:8080)
+Now it's possible to access the Spark Web UI of the master at [127.0.0.1:8080](http://127.0.0.1:8080)
 
 
 ### Step 4: Start a slave
 
 * `./sbin/start-slave.sh spark://127.0.0.1:7077`
 
-Now it's possible to access the Spark Web UI of the slave at [127.0.0.1:8081](127.0.0.1:8081)
+Now it's possible to access the Spark Web UI of the slave at [127.0.0.1:8081](http://127.0.0.1:8081)
 
 
 ### Step 5: Start History Server
 
 * `./sbin/start-history-server.sh`
 
-Now it's possible to access the Spark Web UI of the History Server at [127.0.0.1:18080](127.0.0.1:18080)
+Now it's possible to access the Spark Web UI of the History Server at [127.0.0.1:18080](http://127.0.0.1:18080)
 
 
 ### Step 6: Run the Spark application
