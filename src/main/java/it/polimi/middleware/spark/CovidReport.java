@@ -3,11 +3,11 @@ package it.polimi.middleware.spark;
 import it.polimi.middleware.spark.loaders.DatasetLoader;
 import it.polimi.middleware.spark.loaders.EcdcDataLoader;
 import it.polimi.middleware.spark.loaders.SimulationDataLoader;
-import it.polimi.middleware.spark.operators.DatasetOperator;
+import it.polimi.middleware.spark.operators.DatasetTransformation;
 import it.polimi.middleware.spark.operators.preprocessors.EcdcDataPreprocessor;
 import it.polimi.middleware.spark.operators.preprocessors.SimulationDataPreprocessor;
 import it.polimi.middleware.spark.operators.queries.PercentageIncrease7DaysMA;
-import it.polimi.middleware.spark.operators.queries.SevenDaysMovingAverageOperator;
+import it.polimi.middleware.spark.operators.queries.SevenDaysMovingAverage;
 import it.polimi.middleware.spark.operators.queries.Top10CountriesWithHighestPercentageIncrease;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -17,8 +17,6 @@ import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.apache.spark.sql.functions.*;
 
 public class CovidReport {
 
@@ -49,7 +47,7 @@ public class CovidReport {
 	}
 
 	/**
-	 * Performs the covid report analysis:
+	 * Performs the covid report analysis for each dataset:
 	 * 0) Preprocess input dataset;
 	 * 1) Seven days moving average of new reported cases, for each country and for each day;
 	 * 2) Percentage increase (with respect to the day before) of the seven days moving average, for each country and for each day;
@@ -66,7 +64,7 @@ public class CovidReport {
 				.appName(useCache ? SPARK_APP_NAME_CACHE_ON : SPARK_APP_NAME_CACHE_OFF)
 				.getOrCreate();
 
-		final List<DatasetOperator> preprocessors = new ArrayList<>();
+		final List<DatasetTransformation> preprocessors = new ArrayList<>();
 
 		if(whichDataset.equals("ecdc") || whichDataset.equals("all")) {
 			// Load ECDC data.
@@ -74,8 +72,8 @@ public class CovidReport {
 			final Dataset<Row> ecdcDataset = ecdcDatasetLoader.load();
 
 			// Set up preprocessor.
-			final DatasetOperator preprocessOperator = new EcdcDataPreprocessor(ecdcDataset, showResultsInTerminal);
-			preprocessors.add(preprocessOperator);
+			final DatasetTransformation preprocessTransformation = new EcdcDataPreprocessor(ecdcDataset, showResultsInTerminal);
+			preprocessors.add(preprocessTransformation);
 		}
 
 		if(whichDataset.equals("simulation") || whichDataset.equals("all")) {
@@ -84,27 +82,27 @@ public class CovidReport {
 			final Dataset<Row> simulationDataset = simulationDatasetLoader.load();
 
 			// Set up preprocessor.
-			final DatasetOperator preprocessOperator = new SimulationDataPreprocessor(simulationDataset, showResultsInTerminal);
-			preprocessors.add(preprocessOperator);
+			final DatasetTransformation preprocessTransformation = new SimulationDataPreprocessor(simulationDataset, showResultsInTerminal);
+			preprocessors.add(preprocessTransformation);
 		}
 
-		for(DatasetOperator preprocessor : preprocessors) {
+		for(DatasetTransformation preprocessor : preprocessors) {
 			// Preprocess data.
-			final Dataset<Row> preprocessedCovidDataset = preprocessor.performOperation();
+			final Dataset<Row> preprocessedCovidDataset = preprocessor.getDatasetAfterTransformation();
 
 			// Step 1: Seven days moving average of new reported cases, for each country and for each day.
-			final DatasetOperator query1Operator = new SevenDaysMovingAverageOperator(preprocessedCovidDataset);
-			final Dataset<Row> covidDatasetQuery1 = query1Operator.performOperation();
+			final DatasetTransformation query1Transformation = new SevenDaysMovingAverage(preprocessedCovidDataset);
+			final Dataset<Row> covidDatasetQuery1 = query1Transformation.getDatasetAfterTransformation();
 			if(useCache)
 				covidDatasetQuery1.cache();
-			SparkUtils.saveDatasetAsSingleCSV(covidDatasetQuery1, outputsDirectoryPath + "/" + preprocessor.getDatasetName() + "/" + query1Operator.getDatasetName());
+			SparkUtils.saveDatasetAsSingleCSV(covidDatasetQuery1, outputsDirectoryPath + "/" + preprocessor.getDatasetName() + "/" + query1Transformation.getDatasetName());
 
 			// Step 2: Percentage increase (with respect to the day before) of the seven days moving average, for each country and for each day.
-			final DatasetOperator query2Operator = new PercentageIncrease7DaysMA(covidDatasetQuery1);
-			final Dataset<Row> covidDatasetQuery2 = query2Operator.performOperation();
+			final DatasetTransformation query2Transformation = new PercentageIncrease7DaysMA(covidDatasetQuery1);
+			final Dataset<Row> covidDatasetQuery2 = query2Transformation.getDatasetAfterTransformation();
 			if(useCache)
 				covidDatasetQuery2.cache();
-			SparkUtils.saveDatasetAsSingleCSV(covidDatasetQuery2, outputsDirectoryPath + "/" + preprocessor.getDatasetName() + "/" + query2Operator.getDatasetName());
+			SparkUtils.saveDatasetAsSingleCSV(covidDatasetQuery2, outputsDirectoryPath + "/" + preprocessor.getDatasetName() + "/" + query2Transformation.getDatasetName());
 
 			// Show moving average and percentage increase.
 			if(showResultsInTerminal) {
@@ -117,11 +115,11 @@ public class CovidReport {
 			}
 
 			// Step 3: Top 10 countries with the highest percentage increase of the seven days moving average, for each day.
-			final DatasetOperator query3Operator = new Top10CountriesWithHighestPercentageIncrease(covidDatasetQuery2);
-			final Dataset<Row> covidDatasetQuery3 = query3Operator.performOperation();
+			final DatasetTransformation query3Transformation = new Top10CountriesWithHighestPercentageIncrease(covidDatasetQuery2);
+			final Dataset<Row> covidDatasetQuery3 = query3Transformation.getDatasetAfterTransformation();
 			if(useCache)
 				covidDatasetQuery3.cache();
-			SparkUtils.saveDatasetAsSingleCSV(covidDatasetQuery3, outputsDirectoryPath + "/" + preprocessor.getDatasetName() + "/" + query3Operator.getDatasetName());
+			SparkUtils.saveDatasetAsSingleCSV(covidDatasetQuery3, outputsDirectoryPath + "/" + preprocessor.getDatasetName() + "/" + query3Transformation.getDatasetName());
 
 			// Show top 10 countries.
 			if(showResultsInTerminal) {

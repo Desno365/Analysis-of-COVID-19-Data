@@ -1,7 +1,7 @@
 package it.polimi.middleware.spark.operators.preprocessors;
 
 import it.polimi.middleware.spark.SparkUtils;
-import it.polimi.middleware.spark.operators.DatasetOperator;
+import it.polimi.middleware.spark.operators.DatasetTransformation;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -13,7 +13,7 @@ import java.util.TimeZone;
 
 import static org.apache.spark.sql.functions.*;
 
-public class SimulationDataPreprocessor extends DatasetOperator {
+public class SimulationDataPreprocessor extends DatasetTransformation {
 
 	private final boolean showResultsInTerminal;
 
@@ -23,7 +23,7 @@ public class SimulationDataPreprocessor extends DatasetOperator {
 	}
 
 	@Override
-	public Dataset<Row> performOperation() {
+	public Dataset<Row> getDatasetAfterTransformation() {
 		// Initialize the data.
 		// How is it done:
 		// 1) Select only interesting columns.

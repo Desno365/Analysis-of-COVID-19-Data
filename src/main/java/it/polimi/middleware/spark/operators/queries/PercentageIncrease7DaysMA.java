@@ -1,6 +1,6 @@
 package it.polimi.middleware.spark.operators.queries;
 
-import it.polimi.middleware.spark.operators.DatasetOperator;
+import it.polimi.middleware.spark.operators.DatasetTransformation;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -13,14 +13,14 @@ import static org.apache.spark.sql.functions.when;
 /**
  * PercentageIncrease7DaysMA computes the percentage increase (with respect to the day before) of the seven days moving average, for each country and for each day.
  */
-public class PercentageIncrease7DaysMA extends DatasetOperator {
+public class PercentageIncrease7DaysMA extends DatasetTransformation {
 
 	public PercentageIncrease7DaysMA(Dataset<Row> dataset) {
 		super(dataset, "percentage-increase-seven-days-moving-average-per-country");
 	}
 
 	@Override
-	public Dataset<Row> performOperation() {
+	public Dataset<Row> getDatasetAfterTransformation() {
 		// How it is computed: percentage increase = ((x2-x1)*100)/x1. This can be simplified to (x2/x1 - 1)*100.
 		final WindowSpec windowInEachCountryByDate = Window
 				.partitionBy("country")

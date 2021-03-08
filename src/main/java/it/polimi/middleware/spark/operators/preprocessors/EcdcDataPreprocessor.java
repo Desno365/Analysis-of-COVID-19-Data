@@ -1,6 +1,6 @@
 package it.polimi.middleware.spark.operators.preprocessors;
 
-import it.polimi.middleware.spark.operators.DatasetOperator;
+import it.polimi.middleware.spark.operators.DatasetTransformation;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -9,7 +9,7 @@ import org.apache.spark.sql.types.DataTypes;
 import static org.apache.spark.sql.functions.*;
 import static org.apache.spark.sql.functions.col;
 
-public class EcdcDataPreprocessor extends DatasetOperator {
+public class EcdcDataPreprocessor extends DatasetTransformation {
 
 	private final boolean showResultsInTerminal;
 
@@ -19,7 +19,7 @@ public class EcdcDataPreprocessor extends DatasetOperator {
 	}
 
 	@Override
-	public Dataset<Row> performOperation() {
+	public Dataset<Row> getDatasetAfterTransformation() {
 		// Initialize the data.
 		// How is it done:
 		// 1) Select only interesting columns.
