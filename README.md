@@ -3,6 +3,8 @@
 
 ## Assignment
 
+Note: for more details on the assignment see [Projects 2021.pdf](https://github.com/Desno365/Analysis-of-COVID-19-Data/blob/master/Projects%202021.pdf)
+
 #### Description of the project
 
 Implement a program that analyzes open datasets to study the evolution of the COVID-19 situation worldwide. The program starts from the dataset of new reported cases for each country daily and computes the following queries:
