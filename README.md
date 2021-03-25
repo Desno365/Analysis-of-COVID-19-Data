@@ -14,7 +14,7 @@ Implement a program that analyzes open datasets to study the evolution of the CO
    
 3. Top 10 countries with the highest percentage increase of the seven days moving average, for each day;
 
-You can either use [real open datasets](https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide) or synthetic data generated with a simulator.
+You can use [real open datasets](https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide) and synthetic data generated with a simulator.
 
 #### Assumptions and Guidelines
 
@@ -23,7 +23,7 @@ You can either use [real open datasets](https://www.ecdc.europa.eu/en/publicatio
 
 ## Usage
 
-See [INSTRUCTIONS-SINGLE-HOST.md](https://github.com/Desno365/Spark-Middleware-project/blob/master/INSTRUCTIONS-SINGLE-HOST.md) or [INSTRUCTIONS-MULTIPLE-HOSTS.md](https://github.com/Desno365/Spark-Middleware-project/blob/master/INSTRUCTIONS-MULTIPLE-HOSTS.md).
+See [INSTRUCTIONS-SINGLE-HOST.md](https://github.com/Desno365/Analysis-of-COVID-19-Data/blob/master/INSTRUCTIONS-SINGLE-HOST.md) or [INSTRUCTIONS-MULTIPLE-HOSTS.md](https://github.com/Desno365/Analysis-of-COVID-19-Data/blob/master/INSTRUCTIONS-MULTIPLE-HOSTS.md).
 
 
 ## Developers
