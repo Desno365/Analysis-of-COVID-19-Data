@@ -16,8 +16,8 @@ Modify these variables based on your setup.
 * `export PROJECT_FOLDER_PATH=/Users/Desno365/Desktop/Politecnico/Corsi-e-materiale/Middleware-for-Distributed-Systems/Projects/project5-spark/`
 
 Note:
-  * `SPARK_FOLDER_PATH` is the path to the folder containing Spark that has been downloaded at Step 0.
-  * `PROJECT_FOLDER_PATH` is the path to the folder containing this project, these instructions themselves are contained in the folder.
+* `SPARK_FOLDER_PATH` is the path to the folder containing Spark that has been downloaded at Step 0.
+* `PROJECT_FOLDER_PATH` is the path to the folder containing this project, these instructions themselves are contained in the folder.
 
 
 ### Step 2: Setup the Spark configuration
