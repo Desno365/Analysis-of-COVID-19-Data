@@ -28,6 +28,12 @@ You can use [real open datasets](https://www.ecdc.europa.eu/en/publications-data
 See [INSTRUCTIONS-SINGLE-HOST.md](https://github.com/Desno365/Analysis-of-COVID-19-Data/blob/master/INSTRUCTIONS-SINGLE-HOST.md) or [INSTRUCTIONS-MULTIPLE-HOSTS.md](https://github.com/Desno365/Analysis-of-COVID-19-Data/blob/master/INSTRUCTIONS-MULTIPLE-HOSTS.md).
 
 
+## Grade
+
+This project was made for the course: "Middleware Technologies for Distributed Systems" at "Politecnico di Milano", Academic Year 2020/2021.<br>
+Grade: 30/30.
+
+
 ## Developers
 
 [Accordi Gianmarco](https://github.com/gianfi12)
